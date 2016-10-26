@@ -67,6 +67,13 @@ function verify (rules, methodsForParamGet = {}) {
   }
 }
 verify.errMsg = verifyErrMsg
+Object.defineProperty(verify, "errMsg", {
+  set (v) {
+    verifyErrMsg = v
+    verifyBase.errMsg = v
+  },
+  get: () => verifyErrMsg
+})
 verify.verifyBase = verifyBase
 verify.on = function (event, callBack) {
   if (hook.hasOwnProperty(event)) hook[event] = callBack
