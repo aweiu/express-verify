@@ -66,6 +66,7 @@ function verify(rules, methodsForParamGet = {}) {
   };
 }
 verify.errMsg = verifyErrMsg;
+verify.verifyBase = verifyBase;
 verify.on = function (event, callBack) {
   if (hook.hasOwnProperty(event)) hook[event] = callBack;
 };

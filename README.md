@@ -249,3 +249,9 @@ verify.canBeNull(rules, {
   }
 }
 ```
+## verifyBase
+本插件校验的核心方法来自[verify-base](https://github.com/aweiu/verify-base)
+```
+// 通过该方式获取verifyBase以使用其内置的各种校验方法
+verify.verifyBase
+```
