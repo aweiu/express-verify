@@ -22,7 +22,7 @@ verify.on('getParam', (req, paramOn) => {
   // paramOn：参数在req中的位置(body/query/params...)
   return '处理后的提交参数'
 })
-// 配置默认校验不通过时的错误信息
+// 配置默认校验不通过时的提示信息
 verify.errMsg = YourErrMsg
 ```
 ### 二，针对每个router创建校验规则文件
