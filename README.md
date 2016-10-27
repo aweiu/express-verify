@@ -10,6 +10,7 @@ npm install express-verify
 ### 一，在./app.js中执行全局配置
 ```
 import verify from 'express-verify'
+// 以下配置非必须，按你的需求来
 // 校验前的hook 一般用于过滤或修改某些提交参数 next(Function)：继续校验
 verify.on('beforeVerify', (req, res, next) => {})
 // 校验不通过的hook 用于配置校验不通过时的返回信息 next(Function)：路由参数中的next
