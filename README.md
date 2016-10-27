@@ -79,7 +79,7 @@ router.put('/users', usersVerify.addUser, (req, res, next) => {
 * canBeNull: 当参数为空时跳过校验，不会执行后面的校验规则
 * mustBeNull: 强制参数必须为空，不允许提交
 
-## 其他配置参数
+## 重要参数说明
 ### mark
 * 用于给校验参数配置别名以替换默认校验不通过提示中的{mark}关键字。**错误提示优先读取errMsg配置项，如果已经配置了errMsg就没必要mark了**
 * 如果没有配置mark和errMsg，将直接使用参数名作为别名
@@ -124,6 +124,24 @@ body: {
   id: false
 }
 ```
+### maxNumber
+注意小于和小于等于的写法
+```
+// 假设number1/number2参数在req.body中
+body: {
+  number1: {
+    // number1 <= 10
+    maxNumber: 10
+  },
+  number2: {
+    // number2 < 10
+    maxNumber: '!10'
+  }
+}
+```
+### minNumber
+参考**maxNumber**配置
+
 ## 自定义校验方法
 如果自带的校验方法满足不了您的需求，可以在校验规则中插入您自己的校验方法
 ```
