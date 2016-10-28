@@ -11,15 +11,23 @@ npm install express-verify
 ```
 import verify from 'express-verify'
 // 以下配置非必须，按你的需求来
-// 校验前的hook 一般用于过滤或修改某些提交参数 next(Function)：继续校验
-verify.on('beforeVerify', (req, res, next) => {})
-// 校验不通过的hook 用于配置校验不通过时的返回信息 next(Function)：路由参数中的next
-verify.on('afterVerify', (errMsg, req, res, next) => {
-  // 插件默认返回如下错误提示
+// 校验前的hook 一般用于过滤或修改某些提交参数
+verify.beforeVerify = (req, res, next, router) => {
+    // next(Function)：继续校验
+    // router(Function)：跳过本次校验，开始执行路由
+    // 如果提交的name为"admin"则跳过本次校验，否则继续校验
+    req.body.name = 'admin' ? router() : next()
+}
+// 校验不通过的hook 用于配置校验不通过时的返回信息
+verify.onError = (errMsg, req, res, next) => {
+  // errMsg：校验不通过的错误信息
+  // next(Function)：忽略本次错误，继续执行路由
+  
+  // 插件默认执行如下代码，返回错误信息。你可以在这里修改校验不通过的response
   res.send({err_msg: errMsg})
-})
-// 校验插件获取提交参数的hook 一般用于项目需要通过自己封装的方法获取参数
-verify.on('getParam', (req, paramOn) => {
+}
+// 校验插件获取req参数的方法配置 一般用于项目需要通过自己封装的方法获取参数
+verify.paramGetter = (req, paramOn) => {
   // paramOn：参数在req中的位置(body/query/params...)
   return '处理后的提交参数'
 })
@@ -80,7 +88,7 @@ router.put('/users', usersVerify.addUser, (req, res, next) => {
 * canBeNull: 当参数为空时跳过校验，不会执行后面的校验规则
 * mustBeNull: 强制参数必须为空，不允许提交
 
-## 重要参数说明
+## 重要校验参数说明
 ### mark
 * 用于给校验参数配置别名以替换默认校验不通过提示中的{mark}关键字。**错误提示优先读取errMsg配置项，如果已经配置了errMsg就没必要mark了**
 * 如果没有配置mark和errMsg，将直接使用参数名作为别名
@@ -160,7 +168,41 @@ body: {
   }
 }
 ```
-## 插件的默认校验不通过提示模版
+## 自定义body/query/params..参数获取方法
+除了使用插件默认参数获取或配置全局paramGetter外，如果需要针对某个校验规则单独处理参数获取，可以给主函数传入自定义参数获取方法
+```
+// ./verify/users.js 针对Router => users 的校验规则
+import verify from 'verify'
+export default {
+  // verifyRule: 参考上文的校验规则示例
+  addUser: verify(verifyRule, {
+    body (req) {
+      return '您处理后的body中的所有参数'
+    },
+    query (req) {
+      return '您处理后的query中的所有参数'
+    }
+  })
+}
+```
+## 属性
+### beforeVerify
+校验前的hook 一般用于过滤或修改某些提交参数。参考上文 **全局配置**
+
+### onError
+校验不通过的hook 一般用于配置校验不通过时的返回信息。参考上文 **全局配置**
+
+### paramGetter
+校验插件获取req参数的方法配置 一般用于项目需要通过自己封装的方法获取参数。参考上文 **全局配置**
+
+### verifyBase
+本插件校验的核心方法来自[verify-base](https://github.com/aweiu/verify-base)
+```
+// 通过该方式获取verifyBase以使用其内置的各种校验方法
+verify.verifyBase
+```
+### errMsg
+插件的默认校验不通过提示模版
 ```
 {
   number: {
@@ -199,27 +241,7 @@ verify.errMsg = {}
 ```
 verify.errMsg.int = '{mark}必须为整数'
 ```
-## 自定义body/query/params..参数获取方法
-除了使用插件默认参数获取或全局的hook=>'getParam'外，如果需要针对某个校验规则单独处理参数获取，可以给主函数传入自定义参数获取方法
-```
-// ./verify/users.js 针对Router => users 的校验规则
-import verify from 'verify'
-export default {
-  // verifyRule: 参考上文的校验规则示例
-  addUser: verify(verifyRule, {
-    body (req) {
-      return '您处理后的body中的所有参数'
-    },
-    query (req) {
-      return '您处理后的query中的所有参数'
-    }
-  })
-}
-```
-## 其他方法
-### on (hookName, fun)
-用于hook校验过程，当前支持'beforeVerify', 'error', 'getParam',参考上文 **全局配置**
-
+## 方法
 ### canBeNull (rules, options = {})
 用于批量给校验规则添加canBeNull属性 rules: 待处理的校验规则 options: 自定义处理规则
 ```
@@ -267,10 +289,4 @@ verify.canBeNull(rules, {
     }
   }
 }
-```
-## verifyBase
-本插件校验的核心方法来自[verify-base](https://github.com/aweiu/verify-base)
-```
-// 通过该方式获取verifyBase以使用其内置的各种校验方法
-verify.verifyBase
 ```

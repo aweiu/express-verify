@@ -8,16 +8,11 @@ var verifyErrMsg = require('./verify-err-msg');
  * Created by awei on 2016/7/6.
  */
 verifyBase.errMsg = verifyErrMsg;
-var hook = {
-  beforeVerify: null,
-  error: null,
-  getParam: null
-};
 function verifyFromRules(req, rules, methodsForParamGet) {
   for (var paramOn in rules) {
     if (!rules.hasOwnProperty(paramOn)) break;
     var rule1 = rules[paramOn];
-    var params = typeof methodsForParamGet[paramOn] === 'function' ? methodsForParamGet[paramOn](req) : typeof hook.getParam === 'function' ? hook.getParam(req, paramOn) : req[paramOn];
+    var params = typeof methodsForParamGet[paramOn] === 'function' ? methodsForParamGet[paramOn](req) : typeof verify.paramGetter === 'function' ? verify.paramGetter(req, paramOn) : req[paramOn];
     for (var paramKey in rule1) {
       if (!rule1.hasOwnProperty(paramKey)) break;
       var rule2 = rule1[paramKey];
@@ -60,9 +55,9 @@ function verify(rules, methodsForParamGet = {}) {
       var tNext = function () {
         if (errMsg) res.send({ err_msg: errMsg });else next();
       };
-      if (typeof hook.error === 'function') hook.error(errMsg, req, res, next);else tNext();
+      if (typeof verify.onError === 'function') verify.onError(errMsg, req, res, next);else tNext();
     };
-    if (typeof hook.beforeVerify === 'function') hook.beforeVerify(req, res, tNext);else tNext();
+    if (typeof verify.beforeVerify === 'function') verify.beforeVerify(req, res, tNext);else tNext();
   };
 }
 verify.errMsg = verifyErrMsg;
@@ -74,9 +69,6 @@ Object.defineProperty(verify, "errMsg", {
   get: () => verifyErrMsg
 });
 verify.verifyBase = verifyBase;
-verify.on = function (event, callBack) {
-  if (hook.hasOwnProperty(event)) hook[event] = callBack;
-};
 verify.canBeNull = function (rules, options = {}) {
   for (var paramOn in rules) {
     if (!rules.hasOwnProperty(paramOn)) break;

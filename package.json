@@ -1,6 +1,14 @@
 {
   "name": "express-verify",
-  "version": "0.0.9",
+  "version": "0.1.0",
+  "description": "express校验插件，用于校验用户提交参数",
+  "keywords": [
+    "express",
+    "verify",
+    "validator",
+    "express-verify",
+    "express-validator"
+  ],
   "author": {
     "name": "余阿伟"
   },
@@ -14,5 +22,6 @@
   },
   "engines": {
     "node": ">=6.0"
-  }
+  },
+  "license": "ISC"
 }
