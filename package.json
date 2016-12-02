@@ -1,13 +1,16 @@
 {
   "name": "express-verify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "express校验插件，用于校验用户提交参数",
   "keywords": [
-    "express",
     "verify",
     "validator",
-    "express-verify",
-    "express-validator"
+    "verification",
+    "check",
+    "express--verify",
+    "express--validator",
+    "express--verification",
+    "express--check"
   ],
   "author": {
     "name": "余阿伟"
