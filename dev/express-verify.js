@@ -21,12 +21,10 @@ function verifyFromRules (req, rules, methodsForParamGet) {
       val = val || ''
       if (rule2.space !== true && typeof val === 'string') val = val.trim()
       if (val === '') {
-        if (rule2.minLength === 0 || rule2.canBeNull) {
-          if (rule2.verify) var justVerifyRule = {verify: rule2.verify}
-          else continue
-        } else return verifyBase.macro(rule2.errMsg || verifyErrMsg.common.empty, 'mark', rule2.mark || paramKey)
+        if (rule2.minLength === 0 || rule2.canBeNull) continue
+        else return verifyBase.macro(rule2.errMsg || verifyErrMsg.common.empty, 'mark', rule2.mark || paramKey)
       }
-      for (var ruleKey in justVerifyRule || rule2) {
+      for (var ruleKey in rule2) {
         if (!rule2.hasOwnProperty(ruleKey)) break
         if (ruleKey === 'errMsg' || ruleKey === 'mark' || ruleKey === 'canBeNull') continue
         var ruleVal = rule2[ruleKey]
