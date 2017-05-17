@@ -16,7 +16,7 @@ verify.beforeVerify = (req, res, next, router) => {
     // next(Function)：继续校验
     // router(Function)：跳过本次校验，开始执行路由
     // 如果提交的name为"admin"则跳过本次校验，否则继续校验
-    req.body.name = 'admin' ? router() : next()
+    req.body.name === 'admin' ? router() : next()
 }
 // 校验不通过的hook 用于配置校验不通过时的返回信息
 verify.onError = (errMsg, req, res, next) => {
