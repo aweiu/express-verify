@@ -1,6 +1,6 @@
 {
   "name": "express-verify",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "express校验插件，用于校验用户提交参数",
   "keywords": [
     "verify",

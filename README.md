@@ -199,7 +199,13 @@ export default {
 本插件校验的核心方法来自[verify-base](https://github.com/aweiu/verify-base)
 ```
 // 通过该方式获取verifyBase以使用其内置的各种校验方法
-verify.verifyBase
+console.log(verify.verifyBase('int')(0.5))
+// 拓展校验规则，具体可参考上方verify-base文档
+// 拓展之后你就可以像使用自带的校验规则（如：phone,number）那样使用你的yourRuleName
+verify.verifyBase('yourRuleName', (val, rule) => {
+  // 校验逻辑
+  return '校验不通过'
+})
 ```
 ### errMsg
 插件的默认校验不通过提示模版
